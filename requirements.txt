@@ -1,12 +1,12 @@
-matplotlib
-numpy
-opencv-python
-opencv-python-headless
-openpyxl
-paddleocr
-paddlepaddle
-pandas
-Pillow
-setuptools
-pydantic
-streamlit
+matplotlib==3.8.0
+numpy==1.26.0
+opencv-python==4.8.1.78
+opencv-python-headless==4.8.1.78
+openpyxl==3.1.6
+paddleocr==2.7.3
+paddlepaddle==2.6.1  # Ensure correct version for your system (CPU or GPU)
+pandas==2.1.1
+Pillow==10.0.0
+setuptools==68.3.0
+pydantic==2.8.2
+streamlit==1.25.0
