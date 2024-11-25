@@ -9,6 +9,5 @@ paddlepaddle
 pandas
 Pillow
 setuptools
-pydistutils
 pydantic
 streamlit
