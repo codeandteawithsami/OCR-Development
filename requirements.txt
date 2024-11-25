@@ -7,3 +7,4 @@ pandas==2.1.1
 Pillow==10.0.0
 paddleocr
 paddlepaddle
+ultralytics
