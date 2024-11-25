@@ -11,3 +11,4 @@ Pillow==9.5.0
 setuptools
 pydistutils
 pydantic==2.8.2
+streamlit
