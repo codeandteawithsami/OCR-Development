@@ -8,5 +8,6 @@ paddleocr==2.7.3
 paddlepaddle==2.6.1
 pandas==2.0.3
 Pillow==9.5.0
-distutils
+setuptools
+pydistutils
 pydantic==2.8.2
