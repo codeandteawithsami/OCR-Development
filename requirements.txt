@@ -2,5 +2,5 @@ ultralytics
 openpyxl
 pandas==2.1.1
 Pillow==10.0.0
-paddlepaddle
+paddlepaddle==2.3.2
 paddleocr
