@@ -1,13 +1,13 @@
-import streamlit as st
-import PIL.Image
+import os
+import re
 import cv2
+import tempfile
+import PIL.Image
 import numpy as np
 import pandas as pd
+import streamlit as st
 from ultralytics import YOLO
 from paddleocr import PaddleOCR
-import re
-import tempfile
-import os
 
 # Initialize PaddleOCR for Chinese
 ocr_chinese = PaddleOCR(use_angle_cls=True, lang='ch')  # For Chinese text detection
@@ -96,26 +96,26 @@ def process_image(image_path):
 if choice == "Single Image Processing":
     st.title("Single Image Processing")
 
-    # Display images from the "Data" folder as test samples
+    # Test images selection from "Data" folder
     data_folder = "Data"
+    image_path = None  # Initialize path to process
+    selected_image = None
+    uploaded_file = None
+
     if os.path.exists(data_folder):
         image_files = [f for f in os.listdir(data_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
         if image_files:
-            st.write("### Test Images from Data Folder:")
-            selected_image = st.selectbox("Select a test image", image_files)
-
-            # Display the selected image
+            st.write("### Select a Test Image:")
+            selected_image = st.selectbox("Choose an image from the 'Data' folder", image_files)
             image_path = os.path.join(data_folder, selected_image)
-            st.image(image_path, caption="Selected Image", use_column_width=True)
-
-            uploaded_file = None
         else:
             st.warning("No images found in the 'Data' folder.")
     else:
         st.error(f"The folder '{data_folder}' does not exist.")
 
-    uploaded_file = st.file_uploader("Or upload an image", type=["jpg", "png", "jpeg"])
+    # Upload functionality for external images
+    uploaded_file = st.file_uploader("Or upload an image for processing", type=["jpg", "png", "jpeg"])
 
     if uploaded_file:
         # Save uploaded file temporarily
@@ -124,19 +124,22 @@ if choice == "Single Image Processing":
         temp_file.close()
         image_path = temp_file.name
 
-        # Display the image
-        st.image(image_path, caption="Uploaded Image", use_column_width=True)
-
-    if uploaded_file or selected_image:
+    # Begin processing after image selection or upload
+    if (selected_image or uploaded_file) and image_path:
         st.markdown("### Processing Image...")
+
+        # Show the image being processed
+        st.image(image_path, caption="Processing Image", use_column_width=True)
+
+        # Process the image
         results_data = process_image(image_path)
 
-        # Display results
+        # Display results in a larger view
         df = pd.DataFrame(results_data)
         st.write("### Detection Results")
-        st.dataframe(df)
+        st.dataframe(df, width=1000)
 
-        # Save to CSV
+        # Save to CSV with original file name
         csv_file = "single_image_results.csv"
         df.to_csv(csv_file, index=False)
 
@@ -148,7 +151,10 @@ if choice == "Single Image Processing":
             mime="text/csv"
         )
 
-        os.remove(temp_file.name) if uploaded_file else None
+        # Clean up temporary file if an uploaded file was processed
+        if uploaded_file:
+            os.remove(image_path)
+
 
 elif choice == "Multiple Image Processing":
     st.title("Multiple Image Processing")
@@ -176,9 +182,9 @@ elif choice == "Multiple Image Processing":
         # Combine results into a DataFrame
         df = pd.DataFrame(all_results)
 
-        # Display sample results
+        # Display sample results in a larger format
         st.write("### Sample Detection Results")
-        st.dataframe(df.head())
+        st.dataframe(df, width=1000)  # Larger width for better readability
 
         # Save to CSV
         csv_file = "multiple_images_results.csv"
